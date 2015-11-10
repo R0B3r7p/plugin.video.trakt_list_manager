@@ -308,12 +308,12 @@ def delete_movie_from_customlist(list_slug, imdb_id, tmdb_id):
 
 def get_movie():
     movie = {
-        'imdb_id': plugin.request.args.get('imdb_id', [''])[0],
-        'tmdb_id': plugin.request.args.get('tmdb_id', [''])[0],
+        'imdb': plugin.request.args.get('imdb_id', [''])[0],
+        'tmdb': plugin.request.args.get('tmdb_id', [''])[0],
         'title': plugin.request.args.get('title', [''])[0],
     }
-    if movie.get('imdb_id') or movie.get('tmdb_id'):
-        return movie
+    if movie.get('imdb') or movie.get('tmdb'):
+        return { 'ids': movie }
     if not movie.get('title'):
         movie['title'] = plugin.keyboard(heading=_('enter_movie_title'))
     if not movie.get('title'):
