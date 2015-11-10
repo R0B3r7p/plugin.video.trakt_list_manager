@@ -64,6 +64,7 @@ STRINGS = {
 
 plugin = Plugin()
 
+
 @plugin.route('/')
 def show_root():
     items = [
@@ -73,6 +74,7 @@ def show_root():
          'path': plugin.url_for(endpoint='show_customlists')},
     ]
     return plugin.finish(items)
+
 
 @plugin.route('/customlists/')
 def show_customlists():
@@ -113,6 +115,7 @@ def show_customlists():
         )
     })
     return plugin.finish(items)
+
 
 @plugin.route('/customlists/<list_slug>/movies/')
 def show_customlist(list_slug):
@@ -165,6 +168,7 @@ def show_customlist(list_slug):
     sort_methods = ['playlist_order', 'video_rating', 'video_year']
     return plugin.finish(items, sort_methods=sort_methods)
 
+
 @plugin.route('/watchlist/movies/')
 def show_watchlist():
     def context_menu(imdb_id, tmdb_id):
@@ -210,6 +214,7 @@ def show_watchlist():
     })
     return items
 
+
 @plugin.route('/watchlist/movies/add')
 def add_movie_to_watchlist():
     movie = get_movie()
@@ -218,6 +223,7 @@ def add_movie_to_watchlist():
             imdb_id=movie['ids']['imdb'],
             tmdb_id=movie['ids']['tmdb'])
         show_result()
+
 
 @plugin.route('/watchlist/movies/delete/<imdb_id>/<tmdb_id>')
 def delete_movie_from_watchlist(imdb_id, tmdb_id):
@@ -230,6 +236,7 @@ def delete_movie_from_watchlist(imdb_id, tmdb_id):
             imdb_id=imdb_id,
             tmdb_id=tmdb_id)
         show_result()
+
 
 @plugin.route('/customlists/new')
 def new_customlist():
@@ -245,6 +252,7 @@ def new_customlist():
         api.add_list(name=title,privacy_id=privacy_id)
         show_result()
 
+
 @plugin.route('/customlists/<list_slug>/delete')
 def delete_customlist(list_slug):
     confirmed = xbmcgui.Dialog().yesno(
@@ -254,6 +262,7 @@ def delete_customlist(list_slug):
     if confirmed:
         api.del_list(list_slug)
         show_result()
+
 
 @plugin.route('/movies/add')
 def add_movie_to_list():
@@ -281,6 +290,7 @@ def add_movie_to_list():
             )
             show_result()
 
+
 @plugin.route('/customlists/<list_slug>/movies/add')
 def add_movie_to_customlist(list_slug):
     movie = get_movie()
@@ -291,6 +301,7 @@ def add_movie_to_customlist(list_slug):
             tmdb_id=movie['ids']['tmdb']
         )
         show_result()
+
 
 @plugin.route('/customlists/<list_slug>/movies/delete/<imdb_id>/<tmdb_id>')
 def delete_movie_from_customlist(list_slug, imdb_id, tmdb_id):
@@ -305,6 +316,7 @@ def delete_movie_from_customlist(list_slug, imdb_id, tmdb_id):
             tmdb_id=tmdb_id
         )
         show_result()
+
 
 def get_movie():
     movie = {
@@ -332,6 +344,7 @@ def get_movie():
     if selected >= 0:
         return movies[selected]['movie']
 
+
 def ask_list():
     customlists = api.get_lists()
     lists = [{'name': ('watchlist'), 'ids': {'slug': WATCHLIST_SLUG}}] + customlists
@@ -341,6 +354,7 @@ def ask_list():
     if selected >= 0:
         return lists[selected]
 
+
 def show_result():
     #TODO: Consider how to catch & display results 
     icon_path = os.path.join(plugin.addon.getAddonInfo('path'), 'icon.png')
@@ -348,6 +362,7 @@ def show_result():
     if 'refresh' in plugin.request.args:
         xbmc.executebuiltin('Container.Refresh')
     
+
 @plugin.route('/help')
 def show_help():
     xbmcgui.Dialog().ok(
@@ -356,6 +371,7 @@ def show_help():
         _('help_l2'),
         _('help_l3'),
     )
+
 
 @plugin.route('/settings/default_list')
 def set_default_list():
@@ -367,9 +383,11 @@ def set_default_list():
         plugin.set_setting('default_list', '')
         plugin.set_setting('default_list_slug', '')
 
+
 @plugin.route('/settings')
 def open_settings():
     plugin.open_settings()
+
 
 @plugin.cached()
 def get_xbmc_movies():
@@ -389,11 +407,13 @@ def get_xbmc_movies():
     )
     return movie_dict
 
+
 @plugin.route('/movie/<imdb_id>/play')
 def play_movie(imdb_id):
     xbmc_movies = get_xbmc_movies()
     movie_file = xbmc_movies[imdb_id]
     return plugin.set_resolved_url(movie_file)
+
 
 def format_movies(raw_movies):
     xbmc_movies = get_xbmc_movies()
@@ -469,8 +489,10 @@ def get_api():
             plugin.open_settings()
     return api
 
+
 def log(text):
     plugin.log.info(text)
+
 
 def _(string_id):
     if string_id in STRINGS:
